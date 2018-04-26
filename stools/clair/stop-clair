@@ -1,0 +1,4 @@
+#!/bin/bash
+
+#TODO: check that Docker is installed 
+docker stop clair-db clair-scanner

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+#TODO: check that Docker is installed 
+
+docker run -d --name clair-db arminc/clair-db
+docker run -p 6060:6060 --link clair-db:postgres -d --name clair-scanner arminc/clair-local-scan:v2.0.0
