@@ -1,0 +1,15 @@
+sudo: required
+
+language: ruby
+
+services:
+  - docker
+
+script:
+  - docker-compose up -d clair-db
+  - docker-compose up -d clair-scanner
+  - sleep 3
+  - docker-compose logs
+  - docker exec -it clair-scanner singularity pull --name container.simg shub://vsoch/hello-world
+  - docker exec -it clair-scanner sclair container.simg
+
