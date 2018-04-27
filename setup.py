@@ -81,8 +81,6 @@ if __name__ == "__main__":
           long_description=LONG_DESCRIPTION,
           keywords=KEYWORDS,
           install_requires = INSTALL_REQUIRES,
-          scripts=['stools/clair/start-clair',
-                   'stools/clair/stop-clair'],
           classifiers=[
               'Development Status :: 4 - Beta',
               'Environment :: Console',

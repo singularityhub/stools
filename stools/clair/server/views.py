@@ -33,6 +33,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from aiohttp import web
 
 async def index(request):
-    return web.Response(text='Hello Aiohttp!')
+    return web.Response(text='Hello Moto!')
 
 

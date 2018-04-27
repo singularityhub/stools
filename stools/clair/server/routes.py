@@ -36,6 +36,6 @@ def setup_routes(app):
     app.router.add_get('/', index)
 
 def setup_static_routes(app, static_folder):
-    app.router.add_static('/imaes/',
+    app.router.add_static('/images/',
                           path=static_folder,
                           name='static')

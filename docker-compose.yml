@@ -1,0 +1,16 @@
+clair-db:
+  restart: always
+  image: arminc/clair-db
+
+clair-scanner:
+  restart: always
+  privileged: true
+  image: vanessa/stools-clair
+  volumes:
+    - .:/code
+  ports:
+    - "6060:6060"
+    - "8080:8080"
+  links:
+    - clair-db:postgres
+

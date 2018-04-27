@@ -4,6 +4,8 @@ These are tools for Singularity containers, optimized for using with continuous 
 and quality checks. Right now the package is under development, and these general notes are provided for
 refernece.
 
+[![asciicast](https://asciinema.org/a/178712.png)](https://asciinema.org/a/178712)
+
 In this work we will use [Clair OS](https://github.com/coreos/clair) combined with Continuous Integration
 (travis and circle) to scan [Singularity](https://singularityware.github.io) containers for security
 vulnerabilities. 
@@ -30,20 +32,21 @@ This experiment is based on early discussion in [this thread](https://github.com
 
 ## Basic Usage
 
-Install
+If you want, build the container (or use from Docker Hub)
 
 ```bash
-pip install stools
+docker build -t vanessa/stools-clair
 ```
 
-Start the Clair Server (you need Docker installed)
+Start the application with docker compose. Note that you should have the images you want to scan in the $PWD, which will be mapped to the container in `/code` (see the docker-compose.yml file). You can change this around, just be sure that the containers you want to add are here. I'll be updating this so the server inside can accept a post for an external container, but I need some sleep first :)
 
 ```bash
-./start-clair
+docker-compose up -d
 ```
 
-Scan local images
+Scan a local image in $PWD mapped to /code in the container. Use `docker ps` to get the container name
 
 ```bash
-sclair vsoch-hello-world.simg
+singularity pull shub://vsoch/singularity-hello-world
+docker exec -it c1e28feb0757 sclair vsoch-singularity-hello-world-master-latest.simg
 ```

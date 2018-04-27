@@ -35,13 +35,13 @@ import os
 from stools.clair.server.routes import ( setup_routes, setup_static_routes )
 
 
-def start(port=8080, host='127.0.0.1', static_folder=None):
+def start(port=8080, host='127.0.0.1', static_folder='/var/www/images'):
 
     app = web.Application()
     setup_routes(app)
-    if static_folder != None:
-        if os.path.exists(static_folder):
-            setup_static_routes(app, static_folder)
+    if not os.path.exists(static_folder):
+        os.mkdir(static_folder)
+    setup_static_routes(app, static_folder)
     web.run_app(app, host=host, port=port)
 
 if __name__ == '__main__':

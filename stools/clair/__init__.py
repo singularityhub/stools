@@ -23,10 +23,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from stools.version import __version__
 from stools.clair.image import export_to_targz
+from stools.clair.api import Clair
+from multiprocessing import Process
 import argparse
-import tempfile
-import sys
 import os
+import requests
+import shutil
+import sys
+import tempfile
+import time
 
 
 def get_parser():
@@ -35,6 +40,10 @@ def get_parser():
     parser.add_argument('--version', dest="version", 
                         help="show version and exit.", 
                         default=False, action='store_true')
+
+    parser.add_argument('--start-server', dest="server", 
+                        help="If running natively, start the web server too.", 
+                        default=True, action='store_true')
 
     parser.add_argument("images", nargs='*',
                          help='Singularity images to scan.', 
@@ -47,6 +56,14 @@ def get_parser():
     parser.add_argument("--host", default="127.0.0.1",
                          help='host to serve application (default 127.0.0.1)', 
                          type=str)
+
+    parser.add_argument("--clair-port", default=6060,
+                      help='port Clair is running on (default 6060)', 
+                      type=int, dest="clair_port")
+
+    parser.add_argument("--clair-host", default="127.0.0.1",
+                         help='host Clair running from (default clair-scanner)', 
+                         type=str, dest="clair_host")
 
     return parser
 
@@ -79,24 +96,60 @@ def main():
         version()
         sys.exit(0)
 
-    print(args.images)
+    # Generate Clair controller
+    clair = Clair(args.clair_host, args.clair_port)
+    if not clair.ping():
+        sys.exit(1)
 
-    # 2. Start server for images
-    # UNDER DEVELOPMENT!
-
-    webroot = tempfile.mkdtemp()
+    print(clair)
+    
+    # Local Server
+    webroot = '/var/www/images'
+    server = 'http://%s:%s/' %(args.host, args.port)
 
     # Start the server and serve static files from root
-    from stools.clair.server import start
 
-    start(port=args.port, host=args.host, static_folder=webroot)
+    if args.server is True:
+        from stools.clair.server import start
+        print('\n1. Starting server...')
+        webroot = tempfile.mkdtemp()
+        process = Process(target=start, args=(args.port, args.host, webroot))
+        # start(port=args.port, host=args.host, static_folder=webroot)
+        process.daemon = True
+        process.start()
+        time.sleep(1)
 
+    # Check health of server
+    print('\n1. Checking server...')
+    response = requests.get(server)
+    if response.status_code != 200:
+        print('Server not found running at %s' %server)
+        sys.exit(1)
 
-    for image in images:
+    print('2. Processing images!')
+    for image in args.images:
 
         # 1. decompress to sandbox --> tar.gz
-        targz = export_to_targz(image)
+        targz = export_to_targz(image, via_build=False)
+        print("...exported %s to %s" %(image, targz))
 
+        # 2. Move to webroot
+        targz_web = os.path.join(webroot, os.path.basename(targz))
+        os.rename(targz, targz_web)
+        targz_url = "%simages/%s" %(server, os.path.basename(targz))
 
+        # 3. Scan with Clair, use image name
+        print("...serving %s to Clair" %(targz_url))
+        clair.scan(targz_web, os.path.basename(image))
+
+        # 4. Generate report
+        print('3. Generating report!')
+        report = clair.report(os.path.basename(image))
+        clair.print(report)
+
+    # Shut down temporary server
+    process.terminate()
+    shutil.rmtree(webroot)
+    
 if __name__ == '__main__':
     main()

@@ -33,13 +33,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from spython.main import Client
 from stools.utils import get_temporary_name
+import hashlib
 import tempfile
 import shutil
 import os
 
 
-def export_to_targz(image, tmpdir=None):
-    '''export a Singularity image to a .tar.gz file. 
+def export_to_targz(image, tmpdir=None, via_build=True):
+    '''export a Singularity image to a .tar.gz file. If run within a docker
+       image, you should set via_build to false (as sudo will work under
+       priviledged). Outside of Docker as regular user, via_build works
+       better.
 
        Parameters
        ==========
@@ -53,19 +57,39 @@ def export_to_targz(image, tmpdir=None):
         tmpdir = tempfile.mkdtemp()
 
     # We will build into this directory (sandbox) to export without sudo
-
     export_dir = get_temporary_name(tmpdir, 'singularity-clair')
-    sandbox = Client.build(image, export_dir, sandbox=True, sudo=False)
+    tar = "%s.tar" %export_dir
+    targz = "%s.gz" %tar
 
-    # Create the .tar.gz 
+    if via_build is True:
 
-    targz = "%s.tar.gz" %sandbox
-    cmd = ["tar", "-zcf", targz, sandbox]
-    Client.run_command(cmd)
+        sandbox = Client.build(image, export_dir, sandbox=True, sudo=False)
+    
+        # Create the .tar, then .tar.gz 
 
-    # Clean up the directory
+        cmd = ["tar", "-cf", tar, sandbox]
+        Client._run_command(cmd)
+        shutil.rmtree(sandbox)
 
-    shutil.rmtree(sandbox)
+
+    else:
+
+        # Requires sudo
+        Client.image.export(image, tar)
+
+    cmd = ["gzip", tar]
+    Client._run_command(cmd)
 
     if os.path.exists(targz):
         return targz
+
+
+def sha256(image, block_size=65536):
+    '''create a dummy Docker image name (the sha256 sum)
+       https://gist.github.com/rji/b38c7238128edf53a181
+    '''
+    hashsum = hashlib.sha256()
+    with open(image, "rb") as filey:
+        for chunk in iter(lambda: filey.read(block_size), b""):
+            hashsum.update(chunk)
+    return hashsum.hexdigest()
