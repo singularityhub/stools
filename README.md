@@ -1,8 +1,7 @@
 # Singularity Container Tools
 
 These are tools for Singularity containers, optimized for using with continuous integration for security
-and quality checks. Right now the package is under development, and these general notes are provided for
-refernece.
+and quality checks. For an example of the package being used in a continuous integration context, see the [stools-clair](https://github.com/singularityhub/stools-clair) repository.
 
 [![asciicast](https://asciinema.org/a/178712.png)](https://asciinema.org/a/178712)
 
@@ -35,7 +34,7 @@ This experiment is based on early discussion in [this thread](https://github.com
 If you want, build the container (or use from Docker Hub)
 
 ```bash
-docker build -t vanessa/stools-clair
+docker build -t vanessa/stools-clair .
 ```
 
 Start the application with docker compose. Note that you should have the images you want to scan in the $PWD, which will be mapped to the container in `/code` (see the docker-compose.yml file). You can change this around, just be sure that the containers you want to add are here. I'll be updating this so the server inside can accept a post for an external container, but I need some sleep first :)
@@ -44,9 +43,9 @@ Start the application with docker compose. Note that you should have the images 
 docker-compose up -d
 ```
 
-Scan a local image in $PWD mapped to /code in the container. Use `docker ps` to get the container name
+Scan a local image in $PWD mapped to /code in the container. If you didn't clone the repo, make sure you get the [docker-compose.yml](https://github.com/singularityhub/stools/blob/master/docker-compose.yml) file first!
 
 ```bash
 singularity pull shub://vsoch/singularity-hello-world
-docker exec -it c1e28feb0757 sclair vsoch-singularity-hello-world-master-latest.simg
+docker exec -it clair-scanner sclair vsoch-singularity-hello-world-master-latest.simg
 ```
