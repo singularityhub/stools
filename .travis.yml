@@ -9,6 +9,7 @@ before_install:
   - docker-compose up -d
 
 script:
+  - docker-compose up -d
   - docker exec -it clair-scanner singularity pull --name container.simg shub://vsoch/hello-world
   - docker exec -it clair-scanner sclair container.simg
 
