@@ -2,9 +2,7 @@
 
 '''
 
-Copyright (C) 2018 The Board of Trustees of the Leland Stanford Junior
-University.
-Copyright (C) 2018 Vanessa Sochat.
+Copyright (C) 2018-2019 Vanessa Sochat.
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU Affero General Public License as published by
@@ -53,15 +51,15 @@ def get_parser():
                       help='port to serve application (default 8080)', 
                       type=int)
 
-    parser.add_argument("--host", default="127.0.0.1",
-                         help='host to serve application (default 127.0.0.1)', 
+    parser.add_argument("--host", default="0.0.0.0",
+                         help='host to serve application (default 0.0.0.0)', 
                          type=str)
 
     parser.add_argument("--clair-port", default=6060,
                       help='port Clair is running on (default 6060)', 
                       type=int, dest="clair_port")
 
-    parser.add_argument("--clair-host", default="127.0.0.1",
+    parser.add_argument("--clair-host", default="0.0.0.0",
                          help='host Clair running from (default clair-scanner)', 
                          type=str, dest="clair_host")
 
@@ -130,7 +128,7 @@ def main():
     for image in args.images:
 
         # 1. decompress to sandbox --> tar.gz
-        targz = export_to_targz(image, via_build=False)
+        targz = export_to_targz(image, via_build=True)
         print("...exported %s to %s" %(image, targz))
 
         # 2. Move to webroot
