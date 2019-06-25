@@ -52,5 +52,5 @@ Scan a local image in $PWD mapped to /code in the container. If you didn't clone
 
 ```bash
 $ singularity pull shub://vsoch/singularity-images
-$ docker exec -it clair-scanner sclair vsoch-singularity-hello-world-master-latest.sif
+$ docker exec -it clair-scanner sclair singularity-images_latest.sif
 ```
