@@ -2,10 +2,11 @@ clair-db:
   container_name: clair-db
   restart: always
   image: arminc/clair-db
+  ports:
+    - "5432:5432"
 
 clair-scanner:
   container_name: clair-scanner
-  restart: always
   privileged: true
   image: vanessa/stools-clair
   volumes:

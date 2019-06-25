@@ -9,6 +9,11 @@ In this work we will use [Clair OS](https://github.com/coreos/clair) combined wi
 (travis and circle) to scan [Singularity](https://singularityware.github.io) containers for security
 vulnerabilities. 
 
+## Tags
+
+ - [v2.4.5](https://github.com/singularityhub/stools/tree/v2.4.5) Uses Singularity v2.4.5
+ - [v3.2.1 (master)](https://github.com/singularityhub/stools) Uses Singularity v3.2.1
+
 ## Background
 Clair is intended to run as a server to continuous scan Docker *layers* for vulnerabilities. This doesn't map
 well to the research domain because of the following:
@@ -34,18 +39,18 @@ This experiment is based on early discussion in [this thread](https://github.com
 If you want, build the container (or use from Docker Hub)
 
 ```bash
-docker build -t vanessa/stools-clair .
+$ docker build -t vanessa/stools-clair .
 ```
 
 Start the application with docker compose. Note that you should have the images you want to scan in the $PWD, which will be mapped to the container in `/code` (see the docker-compose.yml file). You can change this around, just be sure that the containers you want to add are here. I'll be updating this so the server inside can accept a post for an external container, but I need some sleep first :)
 
 ```bash
-docker-compose up -d
+$ docker-compose up -d
 ```
 
 Scan a local image in $PWD mapped to /code in the container. If you didn't clone the repo, make sure you get the [docker-compose.yml](https://github.com/singularityhub/stools/blob/master/docker-compose.yml) file first!
 
 ```bash
-singularity pull shub://vsoch/singularity-hello-world
-docker exec -it clair-scanner sclair vsoch-singularity-hello-world-master-latest.simg
+$ singularity pull shub://vsoch/singularity-images
+$ docker exec -it clair-scanner sclair singularity-images_latest.sif
 ```
