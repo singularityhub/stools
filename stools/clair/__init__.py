@@ -22,6 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from stools.version import __version__
 from stools.clair.image import export_to_targz
 from stools.clair.api import Clair
+from stools.clair.server import start
 from multiprocessing import Process
 import argparse
 import os
@@ -103,14 +104,12 @@ def main():
     
     # Local Server
     webroot = '/var/www/images'
-    server = 'http://%s:%s/' %(args.host, args.port)
 
     # Start the server and serve static files from root
 
     if args.server is True:
-        from stools.clair.server import start
         print('\n1. Starting server...')
-        webroot = tempfile.mkdtemp()
+        server = 'http://%s:%s/' %(args.host, args.port)
         process = Process(target=start, args=(args.port, args.host, webroot))
         # start(port=args.port, host=args.host, static_folder=webroot)
         process.daemon = True
@@ -128,7 +127,7 @@ def main():
     for image in args.images:
 
         # 1. decompress to sandbox --> tar.gz
-        targz = export_to_targz(image, via_build=True)
+        targz = export_to_targz(image)
         print("...exported %s to %s" %(image, targz))
 
         # 2. Move to webroot

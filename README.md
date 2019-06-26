@@ -54,3 +54,6 @@ Scan a local image in $PWD mapped to /code in the container. If you didn't clone
 $ singularity pull shub://vsoch/singularity-images
 $ docker exec -it clair-scanner sclair singularity-images_latest.sif
 ```
+
+For a full example (using a container with a known vulnerability) see
+the [example test](test) folder.

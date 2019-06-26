@@ -47,7 +47,7 @@ class Clair(object):
                 'Parentname': '',
                 'Format': 'Docker' }
  
-        response = requests.post(url, json={'Layer': data })
+        response = requests.post(url, json={'Layer': data})
 
         if response.status_code != 201:
             print('Error creating %s at %s' %(data['Path'], url))

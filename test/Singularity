@@ -1,0 +1,38 @@
+Bootstrap: docker
+From: ubuntu:14.04
+
+%labels
+MAINTAINER Thibault NORMAND <me@zenithar.org>
+
+%post
+APACHE_RUN_GROUP=www-data
+APACHE_LOG_DIR=/var/log/apache2
+APACHE_LOCK_DIR=/var/run/apache2
+APACHE_PID_FILE=/var/run/apache2.pid
+APACHE_RUN_DIR=/var/run/apache2
+apt-get update && apt-get install -y apache2
+mkdir /var/run/apache2
+mkdir /var/run/apache2/test
+#chmod +x /usr/lib/cgi-bin/shockme.cgi
+a2enmod cgid
+
+# Install vulnerable bash
+apt-get install -y build-essential wget
+wget https://ftp.gnu.org/gnu/bash/bash-4.3.tar.gz && \
+tar zxvf bash-4.3.tar.gz && \
+cd bash-4.3 && \
+./configure && \
+make && \
+make install
+
+%environment
+export APACHE_RUN_USER=www-data
+export APACHE_RUN_GROUP=www-data
+export APACHE_LOG_DIR=/var/log/apache2
+export APACHE_LOCK_DIR=/var/run/apache2
+export APACHE_PID_FILE=/var/run/apache2.pid
+export APACHE_RUN_DIR=/var/run/apache2
+%runscript
+exec /usr/sbin/apache2 -D FOREGROUND "$@"
+%startscript
+exec /usr/sbin/apache2 -D FOREGROUND "$@"
