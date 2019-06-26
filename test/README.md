@@ -5,7 +5,7 @@ From the root directory:
 
 
 ```bash
-$ docker build -t vanessa/stools .
+$ docker build -t vanessa/stools-clair .
 $ docker-compose up -d
 ```
 
