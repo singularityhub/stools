@@ -25,7 +25,7 @@ from stools.clair.server.routes import (
 )
 
 
-def start(port=8080, host='0.0.0.0', static_folder='/var/www/images'):
+def start(port=8080, host='127.0.0.1', static_folder='/var/www/images'):
 
     app = web.Application()
     setup_routes(app)
