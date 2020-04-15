@@ -23,7 +23,6 @@ from stools.version import __version__
 from stools.clair.image import export_to_targz
 from stools.clair.api import Clair
 from stools.clair.server import start
-from multiprocessing import Process
 import argparse
 import os
 import requests
@@ -31,6 +30,7 @@ import shutil
 import sys
 import tempfile
 import time
+import daemon
 
 
 def get_parser():
@@ -53,7 +53,7 @@ def get_parser():
                       type=int)
 
     parser.add_argument("--host", default="127.0.0.1",
-                         help='host to serve application (default 0.0.0.0)', 
+                         help='host to serve application (default 127.0.0.1)', 
                          type=str)
 
     parser.add_argument("--clair-port", default=6060,
@@ -145,8 +145,8 @@ def main():
         clair.print(report)
 
     # Shut down temporary server
-    process.terminate()
-    shutil.rmtree(webroot)
+#     process.terminate()
+#     shutil.rmtree(webroot)
     
 if __name__ == '__main__':
     main()
