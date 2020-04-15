@@ -145,8 +145,8 @@ def main():
         clair.print(report)
 
     # Shut down temporary server
-#     process.terminate()
-#     shutil.rmtree(webroot)
+    process.terminate()
+    shutil.rmtree(webroot)
     
 if __name__ == '__main__':
     main()
