@@ -23,6 +23,7 @@ from stools.version import __version__
 from stools.clair.image import export_to_targz
 from stools.clair.api import Clair
 from stools.clair.server import start
+from multiprocessing import Process
 import argparse
 import os
 import requests
@@ -30,7 +31,6 @@ import shutil
 import sys
 import tempfile
 import time
-import daemon
 
 
 def get_parser():
