@@ -52,8 +52,12 @@ def get_parser():
                       help='port to serve application (default 8080)', 
                       type=int)
 
-    parser.add_argument("--host", default="127.0.0.1",
-                         help='host to serve application (default 127.0.0.1)', 
+    parser.add_argument("--report", dest="report",
+                      help='if set, output Clair reports to chosen directory (default: /code/reports)',
+                      default=None, type=str)
+
+    parser.add_argument("--host", default="0.0.0.0",
+                         help='host to serve application (default 0.0.0.0)', 
                          type=str)
 
     parser.add_argument("--clair-port", default=6060,
@@ -142,7 +146,22 @@ def main():
         # 4. Generate report
         print('3. Generating report!')
         report = clair.report(os.path.basename(image))
-        clair.print(report)
+        if args.report:
+            if args.report == None:
+                with open("/code/reports/%s.log" %(args.images)) as f:
+                    f.write(report)
+                    f.close()
+            else:
+                try:
+                    filename="%s-%s.json" %(args.report, args.images)
+                    with open(filename, "w+") as f:
+                        f.write(report)
+                        f.close()
+                        print("Wrote report to %s" %(filename))
+                except FileNotFoundError as Error:
+                    sys.exit(status="Issue with report path specified: %s" %(Error))
+        else:
+            clair.print(report)
 
     # Shut down temporary server
     process.terminate()
