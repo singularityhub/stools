@@ -64,7 +64,7 @@ def get_parser():
                       help='port Clair is running on (default 6060)', 
                       type=int, dest="clair_port")
 
-    parser.add_argument("--clair-host", default="0.0.0.0",
+    parser.add_argument("--clair-host", default="127.0.0.1",
                          help='host Clair running from (default clair-scanner)', 
                          type=str, dest="clair_host")
 
