@@ -72,7 +72,9 @@ def get_parser():
     return parser
 
 def dir_path(string):
-    if os.path.isdir(string):
+    if string is None:
+        return "/code/reports"
+    elif os.path.isdir(string):
         return string
     else:
         raise NotADirectoryError(string)
