@@ -73,7 +73,7 @@ def get_parser():
 
 def dir_path(string):
     if string is None:
-        return "/code/reports"
+        return
     elif os.path.isdir(string):
         return string
     else:
