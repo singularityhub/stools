@@ -33,6 +33,7 @@ import tempfile
 import time
 
 
+
 def get_parser():
     parser = argparse.ArgumentParser(description="Singularity Clair Scanner")
 
@@ -54,7 +55,7 @@ def get_parser():
 
     parser.add_argument("--report", dest="report",
                       help='if set, output Clair reports to chosen directory (default: /code/reports)',
-                      default=None, type=str)
+                      default=None, type=dir_path)
 
     parser.add_argument("--host", default="0.0.0.0",
                          help='host to serve application (default 0.0.0.0)', 
@@ -69,6 +70,12 @@ def get_parser():
                          type=str, dest="clair_host")
 
     return parser
+
+def dir_path(string):
+    if os.path.isdir(string):
+        return string
+    else:
+        raise NotADirectoryError(string)
 
 def version():
     print("\nSingularity Clair Scanner v%s" %__version__)
