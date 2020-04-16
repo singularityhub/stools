@@ -147,7 +147,7 @@ def main():
         print('3. Generating report!')
         report = clair.report(os.path.basename(image))
         if args.report:
-            if args.report == None:
+            if args.report is None:
                 with open("/code/reports/%s.log" %(args.images)) as f:
                     f.write(report)
                     f.close()
