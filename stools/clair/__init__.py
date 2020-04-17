@@ -51,6 +51,9 @@ def get_parser():
     parser.add_argument("--port", default=8080,
                       help='port to serve application (default 8080)', 
                       type=int)
+    
+    parser.add_argument("--report", default=None, dest="report", type=dir_path,
+                      help="save Clair reports to chosen directory")
 
     parser.add_argument("--host", default="0.0.0.0",
                          help='host to serve application (default 0.0.0.0)', 
@@ -65,6 +68,13 @@ def get_parser():
                          type=str, dest="clair_host")
 
     return parser
+
+def dir_path(string):
+    if os.path.isdir(string):
+        return string
+    else:
+        print("%s is not a vald directory" % string)
+        sys.exit(0)
 
 def version():
     print("\nSingularity Clair Scanner v%s" %__version__)
@@ -142,7 +152,13 @@ def main():
         # 4. Generate report
         print('3. Generating report!')
         report = clair.report(os.path.basename(image))
-        clair.print(report)
+        if args.report is None:
+            clair.print(report)
+        else:
+            fpath = join(args.report, os.path.splitext(os.pathbasename(image))[0] + ".json")
+            with open(fpath, "w+") as file:
+                file.write(json.dumps(report, indent=2)
+            print("Wrote report to %s" % fpath)
 
     # Shut down temporary server
     process.terminate()
