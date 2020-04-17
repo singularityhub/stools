@@ -1,6 +1,6 @@
-'''
+"""
 
-Copyright (C) 2018-2019 Vanessa Sochat.
+Copyright (C) 2018-2020 Vanessa Sochat.
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,18 @@ License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-'''
+"""
 
 __version__ = "0.0.12"
-AUTHOR = 'Vanessa Sochat'
-AUTHOR_EMAIL = 'vsochat@stanford.edu'
-NAME = 'stools'
+AUTHOR = "Vanessa Sochat"
+AUTHOR_EMAIL = "vsochat@stanford.edu"
+NAME = "stools"
 PACKAGE_URL = "http://www.github.com/singularityhub/stools"
-KEYWORDS = 'singularity container tools'
+KEYWORDS = "singularity container tools"
 DESCRIPTION = "Command line tools for container quality assurance"
 LICENSE = "LICENSE"
 
 INSTALL_REQUIRES = (
-    ('requests', {'min_version': None}),
-    ('spython', {'min_version': "0.0.25"}),
+    ("requests", {"min_version": None}),
+    ("spython", {"min_version": "0.0.25"}),
 )
