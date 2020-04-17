@@ -55,7 +55,7 @@ def get_parser():
 
     parser.add_argument("--report", dest="report",
                       help='output Clair reports to chosen directory. Uses default if no argument passed (default: /code/reports)',
-                      const="/code/reports/"
+                      const="/code/reports/",
                       nargs='?',
                       type=dir_path)
 
