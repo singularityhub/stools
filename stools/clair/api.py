@@ -1,4 +1,4 @@
-"""
+'''
 
 Copyright (C) 2018-2019 Vanessa Sochat.
 
@@ -15,7 +15,7 @@ License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""
+'''
 
 
 import requests
@@ -24,50 +24,56 @@ import sys
 
 
 class Clair(object):
-    """the ClairOS security scanner to scan Docker layers"""
+    '''the ClairOS security scanner to scan Docker layers'''
 
-    def __init__(self, host, port, api_version="v1"):
+    def __init__(self, host, port, api_version='v1'):
 
-        if not host.startswith("http"):
+        if not host.startswith('http'):
             host = "http://%s" % host
 
-        self.url = "%s:%s/%s" % (host, port, api_version)
+        self.url = "%s:%s/%s" %(host, port, api_version)
 
     def __str__(self):
-        return "Clair URL: %s" % self.url
+        return "Clair URL: %s" %self.url
 
     def __repr__(self):
         return self.__str__()
 
     def scan(self, targz_url, name):
-        url = os.path.join(self.url, "layers")
+        url = os.path.join(self.url, 'layers')
 
-        data = {"Name": name, "Path": targz_url, "Parentname": "", "Format": "Docker"}
-
-        response = requests.post(url, json={"Layer": data})
+        data = {'Name': name,
+                'Path': targz_url,
+                'Parentname': '',
+                'Format': 'Docker' }
+ 
+        response = requests.post(url, json={'Layer': data})
 
         if response.status_code != 201:
-            print("Error creating %s at %s" % (data["Path"], url))
+            print('Error creating %s at %s' %(data['Path'], url))
             sys.exit(1)
 
+
     def report(self, name):
-        """generate a report for an image of interest. The name should
+        '''generate a report for an image of interest. The name should
            correspond to the same name used when adding the layer...
 
            Parameters
            ==========
-        """
+        '''
 
-        url = os.path.join(self.url, "layers", name)
-        response = requests.get(url, params={"features": True, "vulnerabilities": True})
+        url = os.path.join(self.url, 'layers', name)
+        response = requests.get(url, params={'features': True,
+                                             'vulnerabilities': True})
         if response.status_code == 200:
             return response.json()
         else:
-            print("Error with %s" % url)
+            print('Error with %s' %url)
             sys.exit(1)
 
+
     def ping(self):
-        """ping serves as a health check. If healthy, will return True.
+        '''ping serves as a health check. If healthy, will return True.
            We do this because the user is starting Clair as
            a separate (Docker) image and it might be the case that the
            server port/host are not correctly set.
@@ -76,34 +82,35 @@ class Clair(object):
            =======
            healthy: If healthy, returns True, otherwise False
 
-        """
-        url = os.path.join(self.url, "namespaces")
+        '''
+        url = os.path.join(self.url, 'namespaces')
         response = requests.get(url)
 
         try:
             if response.status_code != 200:
-                return False
-            namespaces = response.json()["Namespaces"]
-            print("Found %s Clair namespaces" % len(namespaces))
+                return not healthy
+            namespaces = response.json()['Namespaces']
+            print('Found %s Clair namespaces' %len(namespaces))
             return True
         except:
-            print("Cannot find Clair running at %s" % url)
+            print('Cannot find Clair running at %s' %url)
         return False
 
-    def print(self, report):
-        """print the report items"""
 
-        if "Features" in report["Layer"]:
-            items = report["Layer"]["Features"]
+    def print(self, report):
+        '''print the report items'''
+
+        if "Features" in report['Layer']:
+            items = report['Layer']['Features']
 
             for item in items:
-                if "Vulnerabilities" in item:
-                    print("%s - %s" % (item["Name"], item["Version"]))
-                    print("-" * len(item["Name"] + " - " + item["Version"]))
-                    for v in item["Vulnerabilities"]:
-                        print(v["Name"] + " (" + v["Severity"] + ")")
-                        print(v["Link"])
-                        print(v["Description"])
+                if 'Vulnerabilities' in item:
+                    print("%s - %s" % (item['Name'], item['Version']))
+                    print("-" * len(item['Name'] + ' - ' + item['Version']))
+                    for v in item['Vulnerabilities']:
+                        print(v['Name'] + ' (' + v['Severity'] + ')')
+                        print(v['Link'])
+                        print(v['Description'])
                         print("\n")
         else:
-            print("%s does not have any vulnerabilities!" % report["Layer"]["Name"])
+            print("%s does not have any vulnerabilities!" %report['Layer']['Name'])
