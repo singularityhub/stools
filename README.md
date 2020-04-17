@@ -1,5 +1,7 @@
 # Singularity Container Tools
 
+[![PyPI version](https://badge.fury.io/py/stools.svg)](https://badge.fury.io/py/stools)
+
 These are tools for Singularity containers, optimized for using with continuous integration for security
 and quality checks. For an example of the package being used in a continuous integration context, see the [stools-clair](https://github.com/singularityhub/stools-clair) repository.
 
@@ -11,7 +13,11 @@ vulnerabilities.
 
 ## Tags
 
- - [v3.2.1 (master)](https://github.com/singularityhub/stools) Uses Singularity v3.2.1 and above
+Note that after the first two releases, version numbers correspond with releases on pypi,
+and not Singularity versions.
+
+ - [v0.0.12 (master)](https://github.com/singularityhub/stools) adds support for reports saving
+ - [v3.2.1](https://github.com/singularityhub/stools/tree/v3.2.1) Uses Singularity v3.2.1 and above
  - [v2.4.5](https://github.com/singularityhub/stools/tree/v2.4.5) Uses Singularity v2.4.5
 
 ## Background
