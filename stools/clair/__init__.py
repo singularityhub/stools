@@ -53,10 +53,9 @@ def get_parser():
                       help='port to serve application (default 8080)', 
                       type=int)
 
-    parser.add_argument("--report", dest="report",
+    parser.add_argument("--report", nargs='?', dest="report",
                       help='output Clair reports to chosen directory. Uses default if no argument passed (default: /code/reports)',
                       const="/code/reports/",
-                      nargs='?',
                       type=dir_path)
 
     parser.add_argument("--host", default="0.0.0.0",
