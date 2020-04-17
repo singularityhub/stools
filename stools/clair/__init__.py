@@ -47,13 +47,13 @@ def get_parser():
     parser.add_argument("images", nargs='*',
                          help='Singularity images to scan.', 
                          type=str)
+    
+    parser.add_argument("--report", default=None, dest="report", type=dir_path,
+                        help="save Clair reports to chosen directory")
 
     parser.add_argument("--port", default=8080,
                       help='port to serve application (default 8080)', 
                       type=int)
-    
-    parser.add_argument("--report", default=None, dest="report", type=dir_path,
-                      help="save Clair reports to chosen directory")
 
     parser.add_argument("--host", default="0.0.0.0",
                          help='host to serve application (default 0.0.0.0)', 
@@ -155,9 +155,9 @@ def main():
         if args.report is None:
             clair.print(report)
         else:
-            fpath = join(args.report, os.path.splitext(os.pathbasename(image))[0] + ".json")
+            fpath = os.path.join(args.report, os.path.splitext(os.path.basename(image))[0] + ".json")
             with open(fpath, "w+") as file:
-                file.write(json.dumps(report, indent=2)
+                file.write(json.dumps(report, indent=2))
             print("Wrote report to %s" % fpath)
 
     # Shut down temporary server
