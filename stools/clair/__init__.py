@@ -155,7 +155,7 @@ def main():
         print('3. Generating report!')
         report = clair.report(os.path.basename(image))
         if args.report is not None:
-            with open(os.path.join(args.report, args.image)) as filename:
+            with open(os.path.join(args.report, image)) as filename:
                 json.dump(json.loads(report), filename, indent=4)
             print("Wrote report to %s" %(filename))
         else:
