@@ -1,6 +1,6 @@
-'''
+"""
 
-Copyright (C) 2018-2019 Vanessa Sochat.
+Copyright (C) 2018-2020 Vanessa Sochat.
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU Affero General Public License as published by
@@ -15,14 +15,14 @@ License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from stools.clair.server.views import index
 
+
 def setup_routes(app):
-    app.router.add_get('/', index)
+    app.router.add_get("/", index)
+
 
 def setup_static_routes(app, static_folder):
-    app.router.add_static('/images/',
-                          path=static_folder,
-                          name='static')
+    app.router.add_static("/images/", path=static_folder, name="static")

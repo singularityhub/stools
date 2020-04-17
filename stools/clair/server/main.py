@@ -1,6 +1,6 @@
-'''
+"""
 
-Copyright (C) 2018-2019 Vanessa Sochat.
+Copyright (C) 2018-2020 Vanessa Sochat.
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU Affero General Public License as published by
@@ -15,17 +15,14 @@ License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from aiohttp import web
 import os
-from stools.clair.server.routes import (
-    setup_routes, 
-    setup_static_routes
-)
+from stools.clair.server.routes import setup_routes, setup_static_routes
 
 
-def start(port=8080, host='0.0.0.0', static_folder='/var/www/images'):
+def start(port=8080, host="0.0.0.0", static_folder="/var/www/images"):
 
     app = web.Application()
     setup_routes(app)
@@ -34,5 +31,6 @@ def start(port=8080, host='0.0.0.0', static_folder='/var/www/images'):
     setup_static_routes(app, static_folder)
     web.run_app(app, host=host, port=port)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     start()
