@@ -1,6 +1,6 @@
-'''
+"""
 
-Copyright (C) 2018-2019 Vanessa Sochat.
+Copyright (C) 2018-2020 Vanessa Sochat.
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU Affero General Public License as published by
@@ -15,14 +15,14 @@ License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-'''
+"""
 
 import tempfile
 import os
 
 
-def get_temporary_name(tmpdir=None, prefix='stools', ext=''):
-    '''generate a named temporary file in some temporary directory.
+def get_temporary_name(tmpdir=None, prefix="stools", ext=""):
+    """generate a named temporary file in some temporary directory.
        This generates the name and not the actual file, it is up to the
        calling function to generate the structure.
 
@@ -32,13 +32,13 @@ def get_temporary_name(tmpdir=None, prefix='stools', ext=''):
        prefix: the prefix of the file.
        ext: the extension of the file (default .tar.gz)
 
-    '''
-    if ext not in [None, '']:
-        if not ext.startswith('.'):
-            ext = '.%s' %ext
+    """
+    if ext not in [None, ""]:
+        if not ext.startswith("."):
+            ext = ".%s" % ext
 
     if tmpdir == None:
         tmpdir = tempfile.mkdtemp()
 
-    name = "%s.%s%s" %(prefix, next(tempfile._get_candidate_names()), ext)
+    name = "%s.%s%s" % (prefix, next(tempfile._get_candidate_names()), ext)
     return os.path.join(tmpdir, name)
