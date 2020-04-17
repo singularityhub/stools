@@ -73,6 +73,7 @@ def get_parser():
         "--report",
         nargs="?",
         const="/code/reports",
+        dest="report",
         help="save Clair reports to chosen directory (default: /code/reports)",
         type=dir_path,
     )
@@ -193,7 +194,9 @@ def main():
         print("3. Generating report!")
         report = clair.report(basename(image))
         if args.report is not None:
-            fpath = join(args.report, splitext(basename(image))[0] + ".%s" % args.report_format)
+            fpath = join(
+                args.report, splitext(basename(image))[0] + ".%s" % args.report_format
+            )
             if args.report_format == "json":
                 reportfile = json.dumps(report, indent=4)
             elif args.report_format == "html":
