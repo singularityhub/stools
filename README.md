@@ -7,7 +7,7 @@ and quality checks. For an example of the package being used in a continuous int
 
 In this work we will use [Clair OS](https://github.com/coreos/clair) combined with Continuous Integration
 (travis and circle) to scan [Singularity](https://singularityware.github.io) containers for security
-vulnerabilities. 
+vulnerabilities.
 
 ## Tags
 
@@ -28,7 +28,7 @@ run their code bases against tests. Since these services now offer running conta
  - Build a Singularity image, and scan the filesystem contents (before finalized in the image).
 
 While this isn't a continually running service, we can minimally ensure that a container is scanned each time
-it is built (and then likely merged to be used in production). If the user takes advantage of [Singularity Hub](https://www.singularity-hub.org) or [Singularity Registry Server](https://singularityhub.github.io/sregistry) the image will be pushed or built for production after passing 
+it is built (and then likely merged to be used in production). If the user takes advantage of [Singularity Hub](https://www.singularity-hub.org) or [Singularity Registry Server](https://singularityhub.github.io/sregistry) the image will be pushed or built for production after passing
 these various tests.
 
 This experiment is based on early discussion in [this thread](https://github.com/singularityhub/sregistry/issues/14).
@@ -61,7 +61,7 @@ By default, reports are printed to stdout. Saving reports is enabled by using th
 $ docker exec -it clair-scanner sclair singularity-images_latest.sif --report
 ```
 
-Report formats can either be JSON or HTML tables by adding the `--report-format` flag followed by either `json` or `html`.
+Saved reports are JSON by default, but can be changed with the `--report-format` flag followed by either `json` or `html`.
 
 ```bash
 $ docker exec -it clair-scanner sclair singularity-images_latest.sif --report --report-format html
