@@ -103,7 +103,6 @@ def main():
         args = parser.parse_args()
     except:
         sys.exit(0)
-    print("REPORT DIR IS: {}".format(args.report))
 
     if args.version is True:
         version()
@@ -157,8 +156,8 @@ def main():
         print('3. Generating report!')
         report = clair.report(os.path.basename(image))
         if args.report is not None:
-            print(os.path.join(args.report, os.path.basename(image)))
-            file_path = os.path.join(args.report, os.path.basename(image))
+            file_name = os.path.splitext(os.path.basename(image))[0] + '.json'
+            file_path = os.path.join(args.report, file_name)
             with open(file_path) as filename:
                 json.dump(json.loads(report), filename, indent=4)
             print("Wrote report to %s" %(file_path))
