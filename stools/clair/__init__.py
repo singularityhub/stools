@@ -155,19 +155,10 @@ def main():
         # 4. Generate report
         print('3. Generating report!')
         report = clair.report(os.path.basename(image))
-        if args.report is None:
-            with open("/code/reports/%s.log" %(args.images)) as f:
-                f.write(report)
-                f.close()
-        else:
-            try:
-                filename="%s-%s.json" %(args.report, args.images)
-                with open(filename, "w+") as f:
-                    f.write(report)
-                    f.close()
-                    print("Wrote report to %s" %(filename))
-            except FileNotFoundError as Error:
-                sys.exit(status="Issue with report path specified: %s" %(Error))
+        if args.report is not None:
+            with open("".format(args.report, args.images)) as filename:
+                json.dump(json.loads(report), filename, indent=4)
+            print("Wrote report to %s" %(filename))
         else:
             clair.print(report)
 
