@@ -152,13 +152,13 @@ def main():
         # 4. Generate report
         print('3. Generating report!')
         report = clair.report(os.path.basename(image))
-        if args.report is None:
-            clair.print(report)
-        else:
+        if args.report is not None:
             fpath = os.path.join(args.report, os.path.splitext(os.path.basename(image))[0] + ".json")
             with open(fpath, "w+") as file:
                 file.write(json.dumps(report, indent=2))
             print("Wrote report to %s" % fpath)
+        else:
+            clair.print(report)
 
     # Shut down temporary server
     process.terminate()
