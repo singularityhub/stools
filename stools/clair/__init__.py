@@ -31,6 +31,7 @@ import shutil
 import sys
 import tempfile
 import time
+import json
 
 
 def get_parser():
@@ -47,6 +48,13 @@ def get_parser():
     parser.add_argument("images", nargs='*',
                          help='Singularity images to scan.', 
                          type=str)
+    
+    parser.add_argument("--report", default=None, dest="report_location",
+                        help="save Clair reports to chosen directory")
+
+    parser.add_argument('--no-print', dest="no_print", 
+                        help="Disable printing of report to stdout.", 
+                        default=False, action='store_true')
 
     parser.add_argument("--port", default=8080,
                       help='port to serve application (default 8080)', 
@@ -65,6 +73,7 @@ def get_parser():
                          type=str, dest="clair_host")
 
     return parser
+
 
 def version():
     print("\nSingularity Clair Scanner v%s" %__version__)
@@ -95,6 +104,10 @@ def main():
         version()
         sys.exit(0)
 
+    # Validate report folder, if provided, exit early if not a directory
+    if args.report_location and not os.path.isdir(args.report_location):
+        sys.exit("Report directory %s does not exist." % args.report_location)
+
     # Generate Clair controller
     clair = Clair(args.clair_host, args.clair_port)
     if not clair.ping():
@@ -107,7 +120,7 @@ def main():
 
     # Start the server and serve static files from root
 
-    if args.server is True:
+    if args.server:
         print('\n1. Starting server...')
         server = 'http://%s:%s/' %(args.host, args.port)
         process = Process(target=start, args=(args.port, args.host, webroot))
@@ -142,7 +155,15 @@ def main():
         # 4. Generate report
         print('3. Generating report!')
         report = clair.report(os.path.basename(image))
-        clair.print(report)
+        if args.report_location:
+            fpath = os.path.join(args.report_location, os.path.splitext(os.path.basename(image))[0] + ".json")
+            with open(fpath, "w+") as file:
+                file.write(json.dumps(report, indent=2))
+            print("Wrote report to %s" % fpath)
+
+        # Print to stdout, if desired
+        if not args.no_print:
+            clair.print(report)
 
     # Shut down temporary server
     process.terminate()

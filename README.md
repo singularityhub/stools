@@ -11,8 +11,8 @@ vulnerabilities.
 
 ## Tags
 
+ - [v3.2.1 (master)](https://github.com/singularityhub/stools) Uses Singularity v3.2.1 and above
  - [v2.4.5](https://github.com/singularityhub/stools/tree/v2.4.5) Uses Singularity v2.4.5
- - [v3.2.1 (master)](https://github.com/singularityhub/stools) Uses Singularity v3.2.1
 
 ## Background
 Clair is intended to run as a server to continuous scan Docker *layers* for vulnerabilities. This doesn't map
@@ -36,24 +36,81 @@ This experiment is based on early discussion in [this thread](https://github.com
 
 ## Basic Usage
 
-If you want, build the container (or use from Docker Hub)
+You'll need to first clone the repository:
+
+```bash
+git clone https://github.com/singularityhub/stools
+cd stools
+```
+
+### Build Containers
+
+If you want, build the container (or use a tagged release from [Docker Hub](https://hub.docker.com/repository/registry-1.docker.io/vanessa/stools-clair/tags?page=1)).
 
 ```bash
 $ docker build -t vanessa/stools-clair .
 ```
 
-Start the application with docker compose. Note that you should have the images you want to scan in the $PWD, which will be mapped to the container in `/code` (see the docker-compose.yml file). You can change this around, just be sure that the containers you want to add are here. I'll be updating this so the server inside can accept a post for an external container, but I need some sleep first :)
+Start the application with [docker compose](https://docs.docker.com/compose/install/). 
+Note that you should have the images you want to scan in the $PWD, which will be mapped to the container in `/code` 
+(see the [docker-compose.yml](docker-compose.yml) file). You can change this around, just be sure that the containers you want to add are here.
 
 ```bash
 $ docker-compose up -d
 ```
 
-Scan a local image in $PWD mapped to /code in the container. If you didn't clone the repo, make sure you get the [docker-compose.yml](https://github.com/singularityhub/stools/blob/master/docker-compose.yml) file first!
+Make sure that your containers are up and running! There is one for the clair server
+that we will interact with, and one for the database.
+
+```bash
+$ docker-compose ps
+    Name                   Command               State                            Ports                          
+-----------------------------------------------------------------------------------------------------------------
+clair-db        docker-entrypoint.sh postgres    Up      0.0.0.0:5432->5432/tcp                                  
+clair-scanner   /clair -config=/config/con ...   Up      0.0.0.0:6060->6060/tcp, 6061/tcp, 0.0.0.0:8080->8080/tcp
+```
+
+Also note that the folder [reports](reports) by way of being in the mounted present working
+directory, will appear at `/code/reports` in the container. We will need to know this later.
+
+### Scan an Image
+
+Let's scan a local image in $PWD mapped to /code in the container. First
+pull one from your registry of choice:
 
 ```bash
 $ singularity pull shub://vsoch/singularity-images
-$ docker exec -it clair-scanner sclair singularity-images_latest.sif
 ```
 
-For a full example (using a container with a known vulnerability) see
+And now let's scan! We do this by executing a command to the `clair-scanner` container.
+The most basic usage will just print a report to stdout, like this:
+
+```bash
+$ docker exec -it clair-scanner sclair singularity-images_latest.sif
+...
+
+CVE-2016-9843 (Low)
+http://people.ubuntu.com/~ubuntu-security/cve/CVE-2016-9843
+The crc32_big function in crc32.c in zlib 1.2.8 might allow context-dependent attackers to have unspecified impact via vectors involving big-endian CRC calculation.
+```
+
+### Save a Report
+
+However, if you want to save a report to file (json), you can add the `--report` argument
+pointing to an existing output directory of choice. For example, since [reports](reports)
+is provided in our present working directory and already bound to the container at `/code/reports`
+we can specify that as an argument:
+
+```bash
+$ docker exec -it clair-scanner sclair --report /code/reports singularity-images_latest.sif
+```
+
+Using `--report` will not disable the print to stdout. However, if you want to disable it,
+you can add the `--no-print` option. An example JSON report can be found in the [reports](reports) folder.
+
+```bash
+$ docker exec -it clair-scanner sclair --report /code/reports --no-print singularity-images_latest.sif
+```
+
+For a full example of what is printed to stdout (using a container with a known vulnerability) see
 the [example test](test) folder.

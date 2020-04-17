@@ -32,7 +32,7 @@ RUN apk add --update alpine-sdk
 RUN mkdir -p /code /opt /var/www/images
 ADD . /code/
 WORKDIR /code
-RUN apk add wget python3 nginx vim xz
+RUN apk add wget python3 python3-dev nginx vim xz
 RUN wget https://bootstrap.pypa.io/get-pip.py && python3 get-pip.py
 RUN python3 setup.py install
 RUN python3 -m pip install --upgrade pip && \
