@@ -55,5 +55,11 @@ $ singularity pull shub://vsoch/singularity-images
 $ docker exec -it clair-scanner sclair singularity-images_latest.sif
 ```
 
+By default, reports are printed to stdout. Saving reports as JSON by using the `--report` option followed by a path to a exisitng directory. Reports will not be printed to stdout if `--report` is used.
+
+```bash
+$ docker exec -it clair-scanner sclair singularity-images_latest.sif --report /code/reports
+```
+
 For a full example (using a container with a known vulnerability) see
 the [example test](test) folder.
