@@ -55,5 +55,17 @@ $ singularity pull shub://vsoch/singularity-images
 $ docker exec -it clair-scanner sclair singularity-images_latest.sif
 ```
 
+By default, reports are printed to stdout. Saving reports is enabled by using the `--report` flag which will save the report as JSON in $PWD/reports and not print to stdout. Additionally, `--report` accepts a directory path which will tell `sclair` where to save reports.
+
+```bash
+$ docker exec -it clair-scanner sclair singularity-images_latest.sif --report
+```
+
+You can change between JSON and HTML table reports by adding the `--report-format` flag followed by either `json` or `html`.
+
+```bash
+$ docker exec -it clair-scanner sclair singularity-images_latest.sif --report --report-format html
+```
+
 For a full example (using a container with a known vulnerability) see
 the [example test](test) folder.

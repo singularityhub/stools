@@ -1,4 +1,4 @@
-'''
+"""
 
 Copyright (C) 2018-2019 Vanessa Sochat.
 
@@ -15,9 +15,10 @@ License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from aiohttp import web
 
+
 async def index(request):
-    return web.Response(text='Hello Moto!')
+    return web.Response(text="Hello Moto!")

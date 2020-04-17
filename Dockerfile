@@ -26,7 +26,7 @@ FROM singularityware/singularity:v3.2.1-slim as base
 FROM arminc/clair-local-scan:v2.0.8_0ed98e9ead65a51ba53f7cc53fa5e80c92169207 as clair
 COPY --from=base /usr/local/singularity /usr/local/singularity
 
-RUN apk add --no-cache ca-certificates libseccomp squashfs-tools git
+RUN apk add --no-cache ca-certificates git libseccomp squashfs-tools
 RUN apk add --update alpine-sdk
 
 RUN mkdir -p /code /opt /var/www/images
@@ -34,8 +34,15 @@ ADD . /code/
 WORKDIR /code
 RUN apk add wget python3 nginx vim xz
 RUN wget https://bootstrap.pypa.io/get-pip.py && python3 get-pip.py
+RUN apk add --update --no-cache --virtual .build-deps \
+        g++ \
+        libxml2 \
+        libxml2-dev && \
+        python3-dev && \
+    apk add libxslt-dev && \
+    python3 -m pip install --upgrade pip && \
+    python3 -m pip install -r /code/requirements.txt && \
+    apk del .build-deps
 RUN python3 setup.py install
-RUN python3 -m pip install --upgrade pip && \
-    python3 -m pip install -r /code/requirements.txt
 
 ENV PATH="/usr/local/singularity/bin:$PATH"
