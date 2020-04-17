@@ -61,7 +61,7 @@ By default, reports are printed to stdout. Saving reports is enabled by using th
 $ docker exec -it clair-scanner sclair singularity-images_latest.sif --report
 ```
 
-You can change between JSON and HTML table reports by adding the `--report-format` flag followed by either `json` or `html`.
+Change between JSON or an HTML table reports by adding the `--report-format` flag followed by `json` or `html`.
 
 ```bash
 $ docker exec -it clair-scanner sclair singularity-images_latest.sif --report --report-format html
