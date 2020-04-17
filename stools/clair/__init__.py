@@ -193,20 +193,19 @@ def main():
         print("3. Generating report!")
         report = clair.report(basename(image))
         if args.report is not None:
-            fname = splitext(basename(image))[0] + ".%s" % args.report_format
-            fpath = join(args.report, fname)
+            fpath = join(args.report, splitext(basename(image))[0] + ".%s" % args.report_format)
             if args.report_format == "json":
-                fmtreport = json.dumps(report, indent=4)
+                reportfile = json.dumps(report, indent=4)
             elif args.report_format == "html":
                 htmlreport = (
                     """<html><head><title>Vulnerability Report</title></head><h2 align="center">%s Vulnerability Report</h2><body><div align="center">%s</div></body></html>"""
                     % (image, json2html.convert(json=report))
                 )
-                fmtreport = etree.tostring(
+                reportfile = etree.tostring(
                     html.fromstring(htmlreport), encoding="unicode", pretty_print=False
                 )
             with open(fpath, "w+") as file:
-                file.write(fmtreport)
+                file.write(reportfile)
             print("Wrote report to %s" % fpath)
         else:
             clair.print(report)
