@@ -38,15 +38,15 @@ def get_parser():
     parser = argparse.ArgumentParser(description="Singularity Clair Scanner")
 
     parser.add_argument('--version', dest="version", 
-                        help="show version and exit.", 
+                        help="show version and exit", 
                         default=False, action='store_true')
 
     parser.add_argument('--start-server', dest="server", 
-                        help="If running natively, start the web server too.", 
+                        help="if running natively, start the web server too", 
                         default=True, action='store_true')
 
     parser.add_argument("images", nargs='*',
-                         help='Singularity images to scan.', 
+                         help='Singularity images to scan', 
                          type=str)
 
     parser.add_argument("--port", default=8080,
@@ -54,8 +54,10 @@ def get_parser():
                       type=int)
 
     parser.add_argument("--report", dest="report",
-                      help='if set, output Clair reports to chosen directory (default: /code/reports)',
-                      default=None, type=dir_path)
+                      help='output Clair reports to chosen directory. Uses default if no argument passed (default: /code/reports)',
+                      const="/code/reports/"
+                      nargs='?',
+                      type=dir_path)
 
     parser.add_argument("--host", default="0.0.0.0",
                          help='host to serve application (default 0.0.0.0)', 
@@ -66,15 +68,13 @@ def get_parser():
                       type=int, dest="clair_port")
 
     parser.add_argument("--clair-host", default="127.0.0.1",
-                         help='host Clair running from (default clair-scanner)', 
+                         help='host Clair is running on (default clair-scanner)', 
                          type=str, dest="clair_host")
 
     return parser
 
 def dir_path(string):
-    if string is None:
-        return
-    elif os.path.isdir(string):
+    if os.path.isdir(string):
         return string
     else:
         raise NotADirectoryError(string)
@@ -155,20 +155,19 @@ def main():
         # 4. Generate report
         print('3. Generating report!')
         report = clair.report(os.path.basename(image))
-        if args.report:
-            if args.report is None:
-                with open("/code/reports/%s.log" %(args.images)) as f:
+        if args.report is None:
+            with open("/code/reports/%s.log" %(args.images)) as f:
+                f.write(report)
+                f.close()
+        else:
+            try:
+                filename="%s-%s.json" %(args.report, args.images)
+                with open(filename, "w+") as f:
                     f.write(report)
                     f.close()
-            else:
-                try:
-                    filename="%s-%s.json" %(args.report, args.images)
-                    with open(filename, "w+") as f:
-                        f.write(report)
-                        f.close()
-                        print("Wrote report to %s" %(filename))
-                except FileNotFoundError as Error:
-                    sys.exit(status="Issue with report path specified: %s" %(Error))
+                    print("Wrote report to %s" %(filename))
+            except FileNotFoundError as Error:
+                sys.exit(status="Issue with report path specified: %s" %(Error))
         else:
             clair.print(report)
 
