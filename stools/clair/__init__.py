@@ -49,7 +49,7 @@ def get_parser():
                          help='Singularity images to scan.', 
                          type=str)
     
-    parser.add_argument("--report", default=None, dest="save_report", type=dir_path,
+    parser.add_argument("--report", default=None, dest="report_location", type=dir_path,
                         help="save Clair reports to chosen directory")
 
     parser.add_argument("--port", default=8080,
@@ -153,8 +153,8 @@ def main():
         # 4. Generate report
         print('3. Generating report!')
         report = clair.report(os.path.basename(image))
-        if args.save_report is not None:
-            fpath = os.path.join(args.report, os.path.splitext(os.path.basename(image))[0] + ".json")
+        if args.report_location is not None:
+            fpath = os.path.join(args.report_location, os.path.splitext(os.path.basename(image))[0] + ".json")
             with open(fpath, "w+") as file:
                 file.write(json.dumps(report, indent=2))
             print("Wrote report to %s" % fpath)
