@@ -25,6 +25,7 @@ from stools.clair.api import Clair
 from stools.clair.server import start
 from multiprocessing import Process
 import argparse
+import json
 import os
 import requests
 import shutil
