@@ -72,6 +72,7 @@ def get_parser():
 
     return parser
 
+
 def dir_path(string):
     if os.path.isdir(string):
         return string
@@ -85,6 +86,8 @@ def version():
 def main():
 
     parser = get_parser()
+    
+    print("REPORT DIR IS: {}".format(args.report))
 
     def help(retval=0):
         '''print help, including the software version and active client 
@@ -155,9 +158,11 @@ def main():
         print('3. Generating report!')
         report = clair.report(os.path.basename(image))
         if args.report is not None:
-            with open(os.path.join(args.report, image)) as filename:
+            print(os.path.join(args.report, image))
+            file_path = os.path.join(args.report, image)
+            with open(file_path) as filename:
                 json.dump(json.loads(report), filename, indent=4)
-            print("Wrote report to %s" %(filename))
+            print("Wrote report to %s" %(file_path))
         else:
             clair.print(report)
 
