@@ -158,7 +158,7 @@ def main():
         if args.report is not None:
             file_name = os.path.splitext(os.path.basename(image))[0] + '.json'
             file_path = os.path.join(args.report, file_name)
-            with open(file_path) as filename:
+            with open(file_path, 'w+') as filename:
                 json.dump(json.loads(report), filename, indent=4)
             print("Wrote report to %s" %(file_path))
         else:
