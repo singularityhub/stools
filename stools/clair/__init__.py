@@ -87,8 +87,6 @@ def main():
 
     parser = get_parser()
     
-    print("REPORT DIR IS: {}".format(args.report))
-
     def help(retval=0):
         '''print help, including the software version and active client 
            and exit with return code.
@@ -105,6 +103,7 @@ def main():
         args = parser.parse_args()
     except:
         sys.exit(0)
+    print("REPORT DIR IS: {}".format(args.report))
 
     if args.version is True:
         version()
