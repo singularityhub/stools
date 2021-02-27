@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2018-2020 Vanessa Sochat.
+Copyright (C) 2018-2021 Vanessa Sochat.
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU Affero General Public License as published by
@@ -52,10 +52,10 @@ class Clair(object):
 
     def report(self, name):
         """generate a report for an image of interest. The name should
-           correspond to the same name used when adding the layer...
+        correspond to the same name used when adding the layer...
 
-           Parameters
-           ==========
+        Parameters
+        ==========
         """
 
         url = os.path.join(self.url, "layers", name)
@@ -68,13 +68,13 @@ class Clair(object):
 
     def ping(self):
         """ping serves as a health check. If healthy, will return True.
-           We do this because the user is starting Clair as
-           a separate (Docker) image and it might be the case that the
-           server port/host are not correctly set.
+        We do this because the user is starting Clair as
+        a separate (Docker) image and it might be the case that the
+        server port/host are not correctly set.
 
-           Returns
-           =======
-           healthy: If healthy, returns True, otherwise False
+        Returns
+        =======
+        healthy: If healthy, returns True, otherwise False
 
         """
         url = os.path.join(self.url, "namespaces")

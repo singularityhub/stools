@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2018-2020 Vanessa Sochat.
+Copyright (C) 2018-2021 Vanessa Sochat.
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU Affero General Public License as published by
@@ -29,14 +29,14 @@ import os
 
 def export_to_targz(image, tmpdir=None):
     """export a Singularity image to a .tar.gz file. If run within a docker
-       image, you should set via_build to false (as sudo will work under
-       priviledged). Outside of Docker as regular user, via_build works
-       better.
+    image, you should set via_build to false (as sudo will work under
+    priviledged). Outside of Docker as regular user, via_build works
+    better.
 
-       Parameters
-       ==========
-       image: the full path to the Singularity image
-       tmpdir: a temporary directory to export to.
+    Parameters
+    ==========
+    image: the full path to the Singularity image
+    tmpdir: a temporary directory to export to.
 
     """
     print("Exporting %s to targz..." % image)
@@ -62,7 +62,7 @@ def export_to_targz(image, tmpdir=None):
 
 def sha256(image, block_size=65536):
     """create a dummy Docker image name (the sha256 sum)
-       https://gist.github.com/rji/b38c7238128edf53a181
+    https://gist.github.com/rji/b38c7238128edf53a181
     """
     hashsum = hashlib.sha256()
     with open(image, "rb") as filey:

@@ -14,5 +14,6 @@ represented by the pull requests that fixed them. Critical items to know are:
 
 
 ## [v1.x](https://github.com/singularityhub/stools/tree/master) (master)
+ - bumping aiohttp version (0.0.13)
  - Adding generation of reports to folder with --reports (0.0.12)
  - Original release of stools, primarily will be used with the docker-compose.yml (0.0.1)
