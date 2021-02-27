@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2018-2020 Vanessa Sochat.
+Copyright (C) 2018-2021 Vanessa Sochat.
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU Affero General Public License as published by
@@ -23,14 +23,14 @@ import os
 
 def get_temporary_name(tmpdir=None, prefix="stools", ext=""):
     """generate a named temporary file in some temporary directory.
-       This generates the name and not the actual file, it is up to the
-       calling function to generate the structure.
+    This generates the name and not the actual file, it is up to the
+    calling function to generate the structure.
 
-       Parameters
-       ==========
-       tmpdir: the temporary directory to create the file
-       prefix: the prefix of the file.
-       ext: the extension of the file (default .tar.gz)
+    Parameters
+    ==========
+    tmpdir: the temporary directory to create the file
+    prefix: the prefix of the file.
+    ext: the extension of the file (default .tar.gz)
 
     """
     if ext not in [None, ""]:

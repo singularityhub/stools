@@ -2,7 +2,7 @@
 
 """
 
-Copyright (C) 2018-2020 Vanessa Sochat.
+Copyright (C) 2018-2021 Vanessa Sochat.
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU Affero General Public License as published by
@@ -114,8 +114,8 @@ def main():
     parser = get_parser()
 
     def help(retval=0):
-        """print help, including the software version and active client 
-           and exit with return code.
+        """print help, including the software version and active client
+        and exit with return code.
         """
         version()
         parser.print_help()
