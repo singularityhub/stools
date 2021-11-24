@@ -1,0 +1,10 @@
+generalallowlist: # Approve CVE for any image
+  CVE-2017-6055: XML
+  CVE-2017-5586: OpenText
+  CVE-2019-13627: ""
+images:
+  ubuntu: # Approve CVE only for ubuntu image, regardles of the version. If it is a private registry with a custom port registry:777/ubuntu:tag this won't work due to a bug.
+    CVE-2017-5230: Java
+    CVE-2017-5230: XSX
+  alpine:
+    CVE-2017-3261: SE

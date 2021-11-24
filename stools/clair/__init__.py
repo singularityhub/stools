@@ -65,6 +65,12 @@ def get_parser():
     )
 
     parser.add_argument(
+        "--allowlist",
+        default=None,
+        help="include a yaml allow list (example in stools repository)",
+    )
+
+    parser.add_argument(
         "--no-print",
         dest="no_print",
         help="Disable printing of report to stdout.",
@@ -147,6 +153,10 @@ def main():
     # Local Server
     webroot = "/var/www/images"
 
+    # If we have an allowlist, make sure it exists
+    if args.allowlist and not os.path.exists(args.allowlist):
+        sys.exit("%s does not exist." % args.allowlist)
+
     # Start the server and serve static files from root
 
     if args.server:
@@ -183,7 +193,7 @@ def main():
 
         # 4. Generate report
         print("3. Generating report!")
-        report = clair.report(os.path.basename(image))
+        report = clair.report(os.path.basename(image), args.allowlist)
         if args.report_location:
             fpath = os.path.join(
                 args.report_location,

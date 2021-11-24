@@ -19,11 +19,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
 import requests
+import yaml
 import os
 import sys
 
 
-class Clair(object):
+class Clair:
     """the ClairOS security scanner to scan Docker layers"""
 
     def __init__(self, host, port, api_version="v1"):
@@ -50,21 +51,55 @@ class Clair(object):
             print("Error creating %s at %s" % (data["Path"], url))
             sys.exit(1)
 
-    def report(self, name):
+    def report(self, name, allowlist=None):
         """generate a report for an image of interest. The name should
         correspond to the same name used when adding the layer...
-
-        Parameters
-        ==========
         """
 
         url = os.path.join(self.url, "layers", name)
         response = requests.get(url, params={"features": True, "vulnerabilities": True})
         if response.status_code == 200:
-            return response.json()
+            hits = response.json()
+            if allowlist:
+                hits = self.apply_allowlist(allowlist, hits)
+            return hits
         else:
             print("Error with %s" % url)
             sys.exit(1)
+
+    def apply_allowlist(self, filename, hits):
+        """
+        Apply an allowlist, meaning a yaml of vulnerabilities to ignore / remove.
+        """
+        with open(filename, "r") as fd:
+            allow = yaml.load(fd.read(), Loader=yaml.SafeLoader)
+
+        # No results?
+        if "Layer" not in hits:
+            return hits
+
+        # General allowlist
+        general = set(allow.get("generalallowlist", {}))
+
+        for image, cves in allow["images"].items():
+
+            # Just match based on list of names (we might want to extend this)
+            cves = set(cves)
+            if not hits["Layer"]["NamespaceName"].startswith(image):
+                continue
+            for feature in hits["Layer"].get("Features", []):
+                if "Vulnerabilities" not in feature:
+                    continue
+                vulns = []
+
+                # For a vulnerability, if it's not in allow list, add
+                for vuln in feature["Vulnerabilities"]:
+                    if vuln["Name"] in cves or vuln["Name"] in general:
+                        print("Allowlist: skipping %s" % vuln["Name"])
+                        continue
+                    vulns.append(vuln)
+                feature["Vulnerabilities"] = vulns
+        return hits
 
     def ping(self):
         """ping serves as a health check. If healthy, will return True.
