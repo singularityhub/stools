@@ -90,15 +90,21 @@ class Clair:
             for feature in hits["Layer"].get("Features", []):
                 if "Vulnerabilities" not in feature:
                     continue
+
+                # Keep record of vulns and allowed
                 vulns = []
+                allowed = []
 
                 # For a vulnerability, if it's not in allow list, add
                 for vuln in feature["Vulnerabilities"]:
                     if vuln["Name"] in cves or vuln["Name"] in general:
                         print("Allowlist: skipping %s" % vuln["Name"])
+                        allowed.append(vuln)
                         continue
                     vulns.append(vuln)
+
                 feature["Vulnerabilities"] = vulns
+                feature["Allowed"] = allowed
         return hits
 
     def ping(self):
@@ -132,11 +138,21 @@ class Clair:
             items = report["Layer"]["Features"]
 
             for item in items:
-                if "Vulnerabilities" in item:
+
+                # Print a header given any items
+                if "Approved" in item or "Vulnerabilities" in item:
                     print("%s - %s" % (item["Name"], item["Version"]))
                     print("-" * len(item["Name"] + " - " + item["Version"]))
-                    for v in item["Vulnerabilities"]:
+
+                if "Approved" in item:
+                    for v in item["Approved"]:
                         print(v["Name"] + " (" + v["Severity"] + ")")
+                        print(v["Link"])
+                        print(v["Description"])
+                        print("\n")
+                if "Vulnerabilities" in item:
+                    for v in item["Vulnerabilities"]:
+                        print(v["Name"] + " (" + v["Severity"] + ") unapproved ")
                         print(v["Link"])
                         print(v["Description"])
                         print("\n")
