@@ -45,8 +45,8 @@ This experiment is based on early discussion in [this thread](https://github.com
 You'll need to first clone the repository:
 
 ```bash
-git clone https://github.com/singularityhub/stools
-cd stools
+$ git clone https://github.com/singularityhub/stools
+$ cd stools
 ```
 
 ### Build Containers
@@ -99,6 +99,15 @@ CVE-2016-9843 (Low)
 http://people.ubuntu.com/~ubuntu-security/cve/CVE-2016-9843
 The crc32_big function in crc32.c in zlib 1.2.8 might allow context-dependent attackers to have unspecified impact via vectors involving big-endian CRC calculation.
 ```
+
+To include an allowlist, e.g., [allowlist.yaml](allowlist.yaml) you can do:
+
+```bash
+$ docker exec -it clair-scanner sclair --allowlist allowlist.yaml singularity-images_latest.sif
+```
+
+You'll notice the previous last entry is different, because it was removed. Currently, we just match CVE names (and don't do
+further parsing) but this can be tweaked if desired.
 
 ### Save a Report
 
