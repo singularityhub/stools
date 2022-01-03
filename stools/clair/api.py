@@ -55,7 +55,6 @@ class Clair:
         """generate a report for an image of interest. The name should
         correspond to the same name used when adding the layer...
         """
-
         url = os.path.join(self.url, "layers", name)
         response = requests.get(url, params={"features": True, "vulnerabilities": True})
         if response.status_code == 200:
@@ -87,13 +86,21 @@ class Clair:
             cves = set(cves)
             if not hits["Layer"]["NamespaceName"].startswith(image):
                 continue
+
+            # Don't continue if no features
+            if not hits["Layer"].get("Features", []):
+                continue
+
+            # Keep list of updated features
+            updated = []
             for feature in hits["Layer"].get("Features", []):
                 if "Vulnerabilities" not in feature:
+                    updated.append(feature)
                     continue
 
                 # Keep record of vulns and allowed
                 vulns = []
-                allowed = []
+                allowed = feature.get("Allowed", [])
 
                 # For a vulnerability, if it's not in allow list, add
                 for vuln in feature["Vulnerabilities"]:
@@ -105,6 +112,9 @@ class Clair:
 
                 feature["Vulnerabilities"] = vulns
                 feature["Allowed"] = allowed
+                updated.append(feature)
+
+            hits["Layer"]["Features"] = updated
         return hits
 
     def ping(self):
@@ -134,27 +144,27 @@ class Clair:
     def print(self, report):
         """print the report items"""
 
-        if "Features" in report["Layer"]:
-            items = report["Layer"]["Features"]
-
-            for item in items:
-
-                # Print a header given any items
-                if "Approved" in item or "Vulnerabilities" in item:
-                    print("%s - %s" % (item["Name"], item["Version"]))
-                    print("-" * len(item["Name"] + " - " + item["Version"]))
-
-                if "Approved" in item:
-                    for v in item["Approved"]:
-                        print(v["Name"] + " (" + v["Severity"] + ")")
-                        print(v["Link"])
-                        print(v["Description"])
-                        print("\n")
-                if "Vulnerabilities" in item:
-                    for v in item["Vulnerabilities"]:
-                        print(v["Name"] + " (" + v["Severity"] + ") unapproved ")
-                        print(v["Link"])
-                        print(v["Description"])
-                        print("\n")
-        else:
+        features = report["Layer"].get("Features", [])
+        if not features:
             print("%s does not have any vulnerabilities!" % report["Layer"]["Name"])
+            return
+
+        for item in features:
+
+            # Print a header given any items
+            if "Allowed" in item or "Vulnerabilities" in item:
+                print("%s - %s" % (item["Name"], item["Version"]))
+                print("-" * len(item["Name"] + " - " + item["Version"]))
+
+            if "Allowed" in item:
+                for v in item["Allowed"]:
+                    print(v["Name"] + " (" + v["Severity"] + ")")
+                    print(v["Link"])
+                    print(v["Description"])
+                    print("\n")
+            if "Vulnerabilities" in item:
+                for v in item["Vulnerabilities"]:
+                    print(v["Name"] + " (" + v["Severity"] + ") unapproved ")
+                    print(v["Link"])
+                    print(v["Description"])
+                    print("\n")
